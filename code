@@ -1,0 +1,51 @@
+#include<IRremote.h>
+#include<Servo.h>
+int RECV_PIN=12;
+IRrecv irrecv(RECV_PIN);
+decode_results results;
+int k=0,p=0;
+Servo myservo;
+void setup()
+{
+  irrecv.enableIRIn();
+  pinMode(12, INPUT);
+   pinMode(11, OUTPUT);
+   pinMode(10, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  if(irrecv.decode(&results)){
+  Serial.println(results.value,HEX);
+   irrecv.resume();
+    if(results.value==0xFD08F7){
+      
+      if(!k)
+        digitalWrite(10,HIGH);
+    
+       else if(k)
+         digitalWrite(10,LOW);
+         
+    k=!k;
+   }
+ }
+      if(results.value==0xFD48B7){
+      
+        if(!p){
+       // digitalWrite(11,HIGH);
+        myservo.attach(11);
+          myservo.write(360);
+        }
+        else if(p){
+           digitalWrite(11,LOW);
+          //myservo.attach(11);
+          //myservo.write(0);
+        }
+      
+        p=!p;
+   
+ }
+  delay(100);
+  //Serial.println(digitalRead(13));
+}
